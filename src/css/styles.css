@@ -39,8 +39,10 @@ body {
   justify-content: space-between;
   padding: 15px;
   text-align: center;
+}
 
-  /* gap: 30px; */
+.load-more {
+  width: 200px;
 }
 
 /* #search-box {

@@ -7,6 +7,7 @@ const BASE_URL = 'https://pixabay.com/api/';
 const inputEl = document.querySelector('input');
 const submitEl = document.querySelector('#search-form');
 const galleryList = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 let limit = 40;
 let page = 2;
 
@@ -20,11 +21,15 @@ async function onSubmit(e) {
   try {
     console.log(inputEl.value);
     const images = await getImages();
-    renderImageList(images);
     if (images.length === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
+    }
+    renderImageList(images);
+    page += 1;
+    if (page > 1) {
+      loadMoreBtn.classList.add('is-visible');
     }
     console.log(images);
   } catch (error) {
