@@ -42,7 +42,14 @@ body {
 }
 
 .load-more {
+  display: none;
   width: 200px;
+  height: 50px;
+  background-color: aquamarine;
+}
+
+.is-visible {
+  display: block;
 }
 
 /* #search-box {
