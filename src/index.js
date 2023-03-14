@@ -1,4 +1,105 @@
 import './css/styles.css';
+import axios from 'axios';
+import Notiflix from 'notiflix';
+
+const KEY = '31653435-37328083d6bab3363a0f0d9c1';
+const BASE_URL = 'https://pixabay.com/api/';
+const inputEl = document.querySelector('input');
+const submitEl = document.querySelector('#search-form');
+const galleryList = document.querySelector('.gallery');
+let limit = 40;
+let page = 2;
+
+submitEl.addEventListener('submit', onSubmit);
+
+// ONSUBMIT FUNCTION
+
+async function onSubmit(e) {
+  e.preventDefault();
+  //   galleryList.innerHTML = '';
+  try {
+    console.log(inputEl.value);
+    const images = await getImages();
+    renderImageList(images);
+    if (images.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+    console.log(images);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// FETCH FUNCTION
+
+async function getImages() {
+  try {
+    const response = await axios.get(`${BASE_URL}`, {
+      params: {
+        key: `${KEY}`,
+        q: `${inputEl.value}`,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: 'true',
+        per_page: limit,
+        page: page,
+      },
+    });
+    return response.data.hits;
+    // console.log(response.data.hits);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// RENDER FUNCTION
+
+function renderImageList(images) {
+  const markup = images
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `
+    <div class="photo-card">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item">
+      <b>Likes</b> <br>${likes} 
+    </p>
+    
+    <p class="info-item">
+      <b>Views</b><br>${views}
+    </p>
+    <p class="info-item">
+      <b>Comments</b><br>${comments}
+    </p>
+    <p class="info-item">
+      <b>Downloads</b><br>${downloads}
+    </p>
+  </div>
+</div>
+    `
+    )
+    .join('');
+  galleryList.innerHTML = markup;
+}
+
+// 'https://pixabay.com/api/?key=31653435-37328083d6bab3363a0f0d9c1';
+
+// https://pixabay.com/api/?key=31653435-37328083d6bab3363a0f0d9c1
+// key - твой уникальный ключ доступа к API.
+// q - термин для поиска. То, что будет вводить пользователь.
+// image_type - тип изображения. Мы хотим только фотографии, поэтому задай значение photo.
+// orientation - ориентация фотографии. Задай значение horizontal.
+// safesearch - фильтр по возрасту. Задай значение true.
 
 // import fetchCountries from './feth';
 // import debounce from 'lodash.debounce';
